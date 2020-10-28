@@ -672,9 +672,9 @@ var judge = function(i, target){
     console.log(`Player ${target} choose ${attribute}`); 
 
     for(let i = 0; i < attributeArr.length; i++){
-        attributeArr[i].removeEventListener('click', bindedFunction.shift());
+        attributeArr[i].removeEventListener('click', bindedFunction);
     }
-
+    bindedFunction = [];
     
     setContent(opposite, true);
 
