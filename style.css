@@ -15,7 +15,7 @@
 body{
     font-size: 20px;
     font-family: 'Bebas Neue', cursive;
-    color: white;
+    color: #9c9c9c;
     /* overflow: hidden; */
 }
 
@@ -29,7 +29,7 @@ body{
     /* border: 4px solid black; */
 }
 
-.video-background { /* class name used in javascript too */
+/* .video-background { 
     object-fit: cover;
     width: 100vw;
     height: 100vh;
@@ -37,7 +37,7 @@ body{
     top: 0;
     left: 0;
     z-index: -1;
-}
+} */
 
 #my_audio{
     visibility: hidden;
