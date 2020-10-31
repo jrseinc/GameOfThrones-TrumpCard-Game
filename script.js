@@ -93,7 +93,7 @@ stockArray = shuffle(stockArray);
 let cards = {}
 const getCards = function (stock) {
     let divider = stock.length / maxPlayers;
-    for (let player of players) {
+    for (let player of players()) {
         // TODO: make better cards divider
         // example for player 1: (player-1*divider) will be 0
         // player*divider will be 25
