@@ -142,13 +142,11 @@ const getAttributeValue = function (card, attribute) {
 }
 const manageCards = function (winnerPlayer) {
     for (let player of players()) {
-        // Do not add winner player card
-        if (player != winnerPlayer) {
+        if(matchData.mode == matchModes.short){
+            getTopCard(player, remove = true);
+        }else if(matchData.mode == matchModes.long){
             let card = getTopCard(player, remove = true);
-            if (matchData.mode == matchModes.long) {
-                // If match mode is long add cards to winner player
-                cards[winnerPlayer].push(card);
-            }
+            cards[winnerPlayer].push(card);
         }
     }
 }
