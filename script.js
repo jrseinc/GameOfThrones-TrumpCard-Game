@@ -286,8 +286,8 @@ const roundManager = function () {
 const setUp = function () {
     addListeners(playerContainers);
     getCards(stockArray);
-    roundManager();
     matchData.status = matchStatus.running;
+    roundManager();
 }
 const loadCharacters = function () {
     fetch('./data.json')
