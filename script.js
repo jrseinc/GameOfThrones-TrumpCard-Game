@@ -65,7 +65,6 @@ let stockArray = [];
 for (let i = 0; i < maxCards; i++) {
     stockArray.push(i);
 }
-console.log(stockArray);
 
 //helper function for shuffling the array
 function shuffle(array) {
@@ -87,7 +86,6 @@ function shuffle(array) {
     return array;
 }
 
-//p1Cards and p2Cards will store the index of their indivisual cards
 stockArray = shuffle(stockArray);
 
 let cards = {}
@@ -111,7 +109,6 @@ function setContent() {
         attributesSupported.forEach(attribute => {
             let text = "";
             if (player == matchData.currentPlayer) {
-                // if (player == matchData.currentPlayer){
                 if (attribute == "average") {
                     character.average /= attributesSupported.length;
                     // No decimal places
@@ -142,43 +139,36 @@ const getAttributeValue = function (card, attribute) {
 }
 const manageCards = function (winnerPlayer) {
     for (let player of players()) {
-        if(matchData.mode == matchModes.short){
-            getTopCard(player, remove = true);
-        }else if(matchData.mode == matchModes.long){
-            let card = getTopCard(player, remove = true);
+        let card = getTopCard(player, remove = true);
+        // Add card to winner player if match mode is long
+        if (matchData.mode == matchModes.long) {
             cards[winnerPlayer].push(card);
         }
     }
 }
-
-// TODO: can be divided into more functions
-const judge = function (attribute) {
-    // Only judge if attribute is supported
-    if (!attributesSupported.includes(attribute))
-        return;
-
-    console.log(`Player ${matchData.currentPlayer} choose ${attribute}`);
-
+const findLargestAttribute = function (selectedAttribute) {
     // Find players which have largest value of selected attribute
     // Add them to this object
-    let maxAttribute = {
+    let largestAttribute = {
         value: -1,
         players: []
     };
     for (let player of players()) {
-        let attributeValue = getAttributeValue(getTopCard(player), attribute);
+        let attributeValue = getAttributeValue(getTopCard(player), selectedAttribute);
         // If attributeValue of the player is greater than stored value
         // add it to the object and make player list empty because
         // now we insert players of new value
-        if (attributeValue > maxAttribute.value) {
-            maxAttribute.value = attributeValue;
-            maxAttribute.players = [];
+        if (attributeValue > largestAttribute.value) {
+            largestAttribute.value = attributeValue;
+            largestAttribute.players = [];
         }
         // Store players who has attribute value equal to largest attribute value
-        if (attributeValue == maxAttribute.value)
-            maxAttribute.players.push(player);
-        console.log(maxAttribute);
+        if (attributeValue == largestAttribute.value)
+            largestAttribute.players.push(player);
     }
+    return largestAttribute;
+}
+const findWithMinRank = function (largestAttribute) {
     // After finding players with largest attribute values, we can find winner among them,
     // as rank is unique. The players with rank less will win the round
     // For now we are assuming rank as the index of characters in the characters array.
@@ -187,7 +177,7 @@ const judge = function (attribute) {
         value: maxCards,
         player: null
     }
-    maxAttribute.players.forEach((player) => {
+    largestAttribute.players.forEach((player) => {
         // getTopCard gives position of card in the character array, we are using it as rank for now
         // If the rank is lower than lowest rank in minRank store it including which player
         // minRank.player will hold the winner player
@@ -195,22 +185,28 @@ const judge = function (attribute) {
             minRank.value = getTopCard(player);
             minRank.player = player;
         }
-        console.log(minRank);
     });
+    return minRank;
+}
+const judge = function (attribute) {
+    // Only judge if attribute is supported
+    if (!attributesSupported.includes(attribute))
+        return;
+
+    let largestAttribute = findLargestAttribute(attribute);
+    let minRank = findWithMinRank(largestAttribute);
     let winner = minRank.player;
+
     manageCards(winner);
+
     if (winner == matchData.currentPlayer) {
-        console.log("attacker wins");
         attWins.play();
     }
     else {
-        console.log("attacker loose");
         diffWins.play();
         // get to next player only if attacker looses
         matchData.nextPlayer(winner);
     }
-    console.log(cards);
-    // call round manager after judging
     roundManager();
 }
 
@@ -223,23 +219,15 @@ const getAttributeName = function (target) {
 }
 const listen = function (event) {
     attributeDetails = getAttributeName(event.target)
-    console.log(attributeDetails)
     // Only judge if we have attribute details, attribute is clicked by current player
     // and match is currently running
     if (matchData.status == matchStatus.running && attributeDetails && (attributeDetails.player == matchData.currentPlayer))
         judge(attributeDetails.attribute)
 }
-// let welcome = function(i){
-//     console.log(i);
-//     for(let i = 0; i < attributeArr.length; i++){
-//         attributeArr[i].removeEventListener('click', bindedFunction[i]);
-//     }
-// }
 const addListeners = function (containers) {
     for (let i = 0; i < containers.length; i++)
         containers[i].addEventListener("click", listen);
 }
-
 const setRole = function () {
     for (let player of players()) {
         let text = "";
@@ -257,7 +245,6 @@ const decideMatch = function () {
         if (cards[player].length == 0)
             matchData.playersLost.push(player);
     }
-    console.log(matchData.playersLost);
     // If all the players except 1 is lost, declare result
     if (matchData.playersLost.length >= maxPlayers - 1) {
         matchData.status = matchStatus.concluded;
@@ -265,7 +252,7 @@ const decideMatch = function () {
         return players().next().value;
     }
 }
-//this function will be called in very round. This function provide the core functionality of the gameplay
+// This function will be called in very round. This function provide the core functionality of the gameplay
 const roundManager = function () {
     if (playerContainers.length < maxPlayers)
         console.warn(`Not enough containers for ${maxPlayers} players.`);
@@ -273,12 +260,10 @@ const roundManager = function () {
         console.warn(`Not enough characters for ${maxCards} cards.`);
     let playerWon = decideMatch();
     if (playerWon) {
-        console.log(`Player ${playerWon} won`);
         alert(`Player ${playerWon} won`);
         return;
     }
     setRole();
-    console.log(matchData);
     setContent();
 }
 const setUp = function () {
@@ -289,10 +274,10 @@ const setUp = function () {
 }
 const loadCharacters = function () {
     fetch('./data.json')
-    .then(response => response.json())
-    .then(data => {
-        characters = data["characters"];
-        setUp();
-  });
+        .then(response => response.json())
+        .then(data => {
+            characters = data["characters"];
+            setUp();
+        });
 }
 loadCharacters();
