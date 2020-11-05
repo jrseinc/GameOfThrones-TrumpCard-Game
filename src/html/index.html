@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <title>Game Of Thrones</title>
+</head>
+<body>
+    <div class="game-area">
+        <!-- eddited for github pages as the 27mb background images couldn't be uploaded -->
+        <video class="video-background" no-controls autoplay loop muted src="./assets/floor.mp4"></video>
+        <div class="palyer-container">
+            <h1 class="role underline" id="player-1-role">ATTACKER</h1>
+            <div class="card">
+
+                <div class="character-image" id="character-1-image"></div>
+                <div class="character-title">
+                    <h1 class="character-name" id="character-1-name">Ser Jaime Lannister</h1>
+                    <p class="character-role underline" id="character-1-role">Lord Commander of the Kingsguard</p>
+                </div>
+                <div class="character-stats">
+                    <div class="power-container-p1  power-container-hover">
+                        <p class="power" id="character-1-age">42</p>
+                        <p class="power-head">age</p>
+                    </div>
+
+                    <div class="power-container-p1 power-container-hover">
+                        <p class="power" id="character-1-power">87</p>
+                        <p class="power-head">power</p>
+                    </div>
+
+                    <div class="power-container-p1 power-container-hover">
+                        <p class="power" id="character-1-strength">90</p>
+                        <p class="power-head">strength</p>
+                    </div>
+
+                    <div class="power-container-p1 power-container-hover">
+                        <p class="power" id="character-1-defence">87</p>
+                        <p class="power-head">defence</p>
+                    </div>
+
+                    <div class="power-container-p1 power-container-hover">
+                        <p class="power" id="character-1-morality">96</p>
+                        <p class="power-head">morality</p>
+                    </div>
+
+                    <div class="power-container-p1 power-container-hover">
+                        <p class="power" id="character-1-average">41</p>
+                        <p class="power-head">average</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="palyer-container">
+            <h1 class="role" id="player-2-role">DEFENDERS</h1>
+            <div class="card">
+                <div class="character-image" id="character-2-image"></div>
+                <div class="character-title">
+                    <h1 class="character-name" id="character-2-name">arya Stark</h1>
+                    <p class="character-role underline" id="character-2-role">Princess</p>
+                </div>
+                <div class="character-stats">
+                    <div class="power-container-p2 power-container-hover">
+                        <p class="power" id="character-2-age">42</p>
+                        <p class="power-head">age</p>
+                    </div>
+
+                    <div class="power-container-p2 power-container-hover">
+                        <p class="power" id="character-2-power">87</p>
+                        <p class="power-head">power</p>
+                    </div>
+
+                    <div class="power-container-p2 power-container-hover">
+                        <p class="power" id="character-2-strength">90</p>
+                        <p class="power-head">strength</p>
+                    </div>
+
+                    <div class="power-container-p2 power-container-hover">
+                        <p class="power" id="character-2-defence">87</p>
+                        <p class="power-head">defence</p>
+                    </div>
+
+                    <div class="power-container-p2 power-container-hover">
+                        <p class="power" id="character-2-morality">96</p>
+                        <p class="power-head">morality</p>
+                    </div>
+
+                    <div class="power-container-p power-container-hover">
+                        <p class="power" id="character-2-average">41</p>
+                        <p class="power-head">average</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <audio class="audios" id="my_audio" src="./assets/bgmusic2.mp3" loop="loop"></audio>
+    <audio class="audios" id="attWins" src="./assets/attWin.mp3"></audio>
+    <audio class="audios" id="diffWins" src="./assets/defWin.mp3"></audio>
+</body>
+</html>
