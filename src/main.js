@@ -55,7 +55,8 @@ let matchData = {
 	},
 	playersLost: [],
 	status: matchStatus.starting,
-	mode: matchModes.short
+	mode: matchModes.short,
+	lastWinner: null
 };
 // Custom iterator to get players which skips players who are lost
 const players = function* (start = 1, end = maxPlayers, step = 1, skipLost = true) {
@@ -207,6 +208,8 @@ const judge = function (attribute) {
 	let minRank = findWithMinRank(largestAttribute);
 	let winner = minRank.player;
 
+	matchData.lastWinner = winner;
+
 	manageCards(winner);
 
 	if (winner == matchData.currentPlayer) {
@@ -258,8 +261,11 @@ const decideMatch = function () {
 	// If all the players except 1 is lost, declare result
 	if (matchData.playersLost.length >= maxPlayers - 1) {
 		matchData.status = matchStatus.concluded;
-		// Return the only left player
-		return players().next().value;
+		if (matchData.mode == matchModes.short)
+			return matchData.lastWinner;
+		else
+			// Return the only left player
+			return players().next().value;
 	}
 };
 // This function will be called in very round. This function provide the core functionality of the gameplay
@@ -301,6 +307,3 @@ if ("serviceWorker" in navigator) {
 		});
 	});
 }
-
-if (module.hot) // eslint-disable-line no-undef
-	module.hot.accept(); // eslint-disable-line no-undef
