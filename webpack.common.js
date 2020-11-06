@@ -14,7 +14,7 @@ module.exports = {
 		publicPath: ASSET_PATH,
 	},
 	plugins: [
-		new CleanWebpackPlugin(),
+		new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
 		new HtmlWebpackPlugin({
 			template: "./src/client/html/index.html",
 			chunks: ["main"]
