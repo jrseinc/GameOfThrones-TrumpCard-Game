@@ -2,13 +2,14 @@
   "name": "trump-cards",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/server/server.js",
   "scripts": {
     "test": "jest",
-    "build-prod": "webpack --mode production --config webpack.server.js && webpack --mode production --config webpack.prod.js",
-    "build-dev": "webpack --mode development --config webpack.server.js && webpack --mode development --config webpack.dev.js",
-    "heroku-postbuild": "webpack --mode production --config webpack.server.js && webpack --mode production --config webpack.prod.js",
-    "start": "node ./dist/server.js"
+    "build-prod": "webpack --mode production --config webpack.prod.js",
+    "heroku-postbuild": "npm run build-prod",
+    "start": "node ./src/server/server.js",
+    "serve-server": "nodemon --inspect src/server/server.js",
+    "serve-client": "webpack serve --progress --hot --config webpack.dev.js"
   },
   "author": "Ashish Saini",
   "license": "MIT",
@@ -27,6 +28,7 @@
     "imagemin-webpack-plugin": "^2.4.2",
     "json-minimizer-webpack-plugin": "^1.0.1",
     "mini-css-extract-plugin": "^1.2.1",
+    "nodemon": "^2.0.6",
     "postcss": "^8.1.4",
     "postcss-loader": "^4.0.4",
     "postcss-preset-env": "^6.7.0",
@@ -38,6 +40,7 @@
     "webpack": "^5.4.0",
     "webpack-cli": "^4.2.0",
     "webpack-dev-middleware": "^4.0.0",
+    "webpack-dev-server": "^3.11.0",
     "webpack-hot-middleware": "^2.25.0",
     "webpack-node-externals": "^2.5.2",
     "workbox-webpack-plugin": "^5.1.4"

@@ -2,19 +2,21 @@
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 module.exports = {
 	/* eslint-enable no-undef */
 	entry: {
-		main: "./src/main.js"
+		main: "./src/client/js/main.js"
 	},
 	output: {
 		publicPath: ASSET_PATH,
 	},
 	plugins: [
+		new CleanWebpackPlugin(),
 		new HtmlWebpackPlugin({
-			template: "./src/html/index.html",
+			template: "./src/client/html/index.html",
 			chunks: ["main"]
 		}),
 		new webpack.DefinePlugin({

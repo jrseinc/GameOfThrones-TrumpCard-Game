@@ -1,9 +1,9 @@
-import "./css/style.css";
-import "./assets/floor.mp4";
-import "./assets/MatchSounds/attWin.mp3";
-import "./assets/MatchSounds/defWin.mp3";
-import "./assets/bgmusic2.mp3";
-import charactersFile from "./data.json";
+import "../css/style.css";
+import "../assets/floor.mp4";
+import "../assets/MatchSounds/attWin.mp3";
+import "../assets/MatchSounds/defWin.mp3";
+import "../assets/bgmusic2.mp3";
+import charactersFile from "../data.json";
 import "regenerator-runtime/runtime.js";
 
 window.onload = function () {

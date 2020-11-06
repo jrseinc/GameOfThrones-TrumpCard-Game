@@ -4,25 +4,20 @@ const common = require("./webpack.common.js");
 const webpack = require("webpack");
 const path = require("path");
 const postcssPresetEnv = require("postcss-preset-env");
-// const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
+
 module.exports = merge(common, {
 	mode: "development",
-	entry: {
-		main: ["webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000", "./src/main.js"]
-	},
 	output: {
 		filename: "[name].js",
 		path: path.resolve(__dirname, "./dist")
 	},
 	optimization: {usedExports: true},
 	devtool: "source-map",
+	devServer: {
+		writeToDisk: true
+	},
 	plugins: [
-		new webpack.HotModuleReplacementPlugin(),
-		// new ScriptExtHtmlWebpackPlugin({
-		// 	async: ["google-maps", "g-recaptcha", "vendor","googletagmanager", "main"],
-		// 	defer: ["google-maps", "g-recaptcha"],
-		// 	prefetch: ["googletagmanager", "google-maps", "g-recaptcha"],
-		// }),
+		new webpack.HotModuleReplacementPlugin()
 	],
 	module: {
 		rules: [

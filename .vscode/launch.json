@@ -1,0 +1,44 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "node",
+			"request": "attach",
+			"name": "Node: Nodemon",
+			"processId": "${command:PickProcess}",
+			"restart": true,
+			"protocol": "inspector",
+		},
+		{
+			"name": "Launch Server",
+			"program": "${workspaceFolder}/src/server/server.js",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "pwa-node",
+			"cwd": "${workspaceFolder}"
+		},
+		{
+			"type": "chrome",
+			"request": "launch",
+			"name": "Launch Chrome",
+			"url": "http://localhost:3000",
+			"sourceMaps": true,
+			"preLaunchTask": "npm: serve-client",
+		}
+	],
+	"compounds": [
+		{
+			"name": "Launch Server and Client",
+			"preLaunchTask": "npm: serve-server",
+			"configurations": [
+				"Node: Nodemon",
+				"Launch Chrome"
+			]
+		}
+	]
+}

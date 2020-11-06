@@ -1,11 +1,11 @@
 /**
  * From: https://github.com/bengrunfeld/expack
  */
-import path from "path";
-import express from "express";
+const path = require("path");
+const express = require("express");
 
 const app = express(),
-	DIST_DIR = __dirname,
+	DIST_DIR = "./dist",
 	HTML_FILE = path.join(DIST_DIR, "index.html");
 
 
@@ -15,7 +15,7 @@ app.get("*", (req, res) => {
 	res.sendFile(HTML_FILE);
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
 	// eslint-disable-next-line no-console
 	console.log(`App listening to ${PORT}....`);
