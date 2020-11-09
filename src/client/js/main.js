@@ -11,21 +11,19 @@ window.onload = function () {
 
 let characters = [];
 
-const attributesSupported = [
-	"age",
-	"power",
-	"strength",
-	"defence",
-	"morality",
-	"average"
-];
+import {
+	attributesSupported,
+	maxPlayers,
+	maxCards,
+	matchStatus,
+	matchModes,
+	matchData
+} from "../../common/structures.mjs";
+
 //audio files
 let attWins = document.querySelector("#attWins");
 let diffWins = document.querySelector("#diffWins");
 
-const maxPlayers = 2;
-// This is done so that we always have equal cards for each player
-const maxCards = 5 * maxPlayers;
 const playerContainers = document.getElementsByClassName("palyer-container");
 
 const getPlayerContainer = function (playerContainers, player) {
@@ -37,26 +35,7 @@ const getStatsPanel = function (container) {
 const getAttributeElement = function (container, attribute, player) {
 	return container.querySelector(`#character-${player}-${attribute}`);
 };
-const matchStatus = Object.freeze({ starting: 1, running: 2, concluded: 3 });
-const matchModes = Object.freeze({ short: 1, long: 2 });
-let matchData = {
-	currentPlayer: 1,
-	nextPlayer: function (winner = null) {
-		if (winner)
-			this.currentPlayer = winner;
-		else
-		{
-			if (this.currentPlayer >= maxPlayers)
-				this.currentPlayer = 1;
-			else
-				this.currentPlayer += 1;
-		}
-	},
-	playersLost: [],
-	status: matchStatus.starting,
-	mode: matchModes.short,
-	lastWinner: null
-};
+
 // Custom iterator to get players which skips players who are lost
 const players = function* (start = 1, end = maxPlayers, step = 1, skipLost = true) {
 	let iterationCount = 0;
