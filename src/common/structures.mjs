@@ -18,7 +18,8 @@ export let matchData = {
 	playersLost: [],
 	status: matchStatus.starting,
 	mode: matchModes.short,
-	lastWinner: null
+	lastWinner: null,
+	isHost: false
 };
 
 export const attributesSupported = [
@@ -29,3 +30,18 @@ export const attributesSupported = [
 	"morality",
 	"average"
 ];
+
+export const commands = Object.freeze({
+	getCards: "get cards",
+	cards: "cards",
+	getMatchData: "get match data",
+	matchData: "match data",
+	createNewGame: "create new game",
+	newGameCreated: "new game created",
+	playerChose: "player chose",
+	playerJoined: "player joined",
+	lobbyFull: "lobby full",
+	joinGame: "join game",
+	error: "error",
+	restartGame: "restart game"
+});

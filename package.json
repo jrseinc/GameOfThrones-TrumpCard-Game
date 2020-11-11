@@ -7,7 +7,7 @@
     "test": "jest",
     "build-prod": "webpack --mode production --config webpack.prod.js",
     "heroku-postbuild": "npm run build-prod",
-    "start": "node ./src/server/server.js",
+    "start": "node ./src/server/server.mjs",
     "serve-server": "nodemon --inspect src/server/server.mjs",
     "serve-client": "webpack serve --progress --hot --config webpack.dev.js"
   },
@@ -15,6 +15,7 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.12.3",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
     "@babel/runtime-corejs3": "^7.12.5",
@@ -39,6 +40,7 @@
     "sass": "^1.29.0",
     "sass-loader": "^10.0.5",
     "serviceworker-webpack-plugin": "^1.0.1",
+    "socket.io-client": "^3.0.0",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.0.3",
     "webpack": "^5.4.0",

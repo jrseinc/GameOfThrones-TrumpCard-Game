@@ -4,6 +4,9 @@ import "../assets/MatchSounds/attWin.mp3";
 import "../assets/MatchSounds/defWin.mp3";
 import "../assets/bgmusic2.mp3";
 import charactersFile from "../data.json";
+import { Online } from "./online";
+
+let online = null;
 
 window.onload = function () {
 	document.getElementById("my_audio").play();
@@ -17,7 +20,8 @@ import {
 	maxCards,
 	matchStatus,
 	matchModes,
-	matchData
+	matchData,
+	commands
 } from "../../common/structures.mjs";
 
 //audio files
@@ -212,8 +216,17 @@ const listen = function (event) {
 	let attributeDetails = getAttributeName(event.target);
 	// Only judge if we have attribute details, attribute is clicked by current player
 	// and match is currently running
-	if (matchData.status == matchStatus.running && attributeDetails && (attributeDetails.player == matchData.currentPlayer))
-		judge(attributeDetails.attribute);
+	if (matchData.status != matchStatus.running ||
+		!attributeDetails ||
+		(attributeDetails.player != matchData.currentPlayer))
+		return;
+	if (online) {
+		// If online then click only allowed for the player you are
+		if (online.player != attributeDetails.player)
+			return;
+		online.playerChose(attributeDetails);
+	}
+	judge(attributeDetails.attribute);
 };
 const addListeners = function (containers) {
 	for (let i = 0; i < containers.length; i++)
@@ -262,19 +275,90 @@ const roundManager = function () {
 };
 const setUp = function () {
 	addListeners(playerContainers);
-	getCards(stockArray);
 	matchData.status = matchStatus.running;
 	roundManager();
 };
+const hostOnline = function () {
+	matchData.isHost = true;
+	initOnline();
+	online.createNewGame();
+};
+const initOnline = function () {
+	online.subscribe(commands.newGameCreated, onlineGameCreated);
+	online.subscribe(commands.playerJoined, playerJoined);
+	online.subscribe(commands.playerChose, playerChose);
+	online.subscribe(commands.cards, cardsReceived);
+	online.subscribe(commands.lobbyFull, startGame);
+	online.subscribe(commands.getCards, sendCards);
+	online.subscribe(commands.error, errorFromServer);
+};
+const sendCards = function () {
+	if (matchData.isHost)
+		online.sendCards(cards);
+};
+const onlineGameCreated = function (data) {
+	online.roomID = data.roomID;
+	document.getElementById("room-id").innerText = online.roomID;
+	online.sendCards(cards);
+};
+const cardsReceived = function (cards_in) {
+	// Only receive cards if the player is not host
+	if (!matchData.isHost) {
+		cards = cards_in;
+		// Setup when cards are available an when not a host
+		setUp();
+	}
+};
+const playerJoined = function () {
+	console.log("Player joined.");
+	if (matchData.isHost)
+		online.sendCards(cards);
+};
+const playerChose = function (data) {
+	judge(data.attribute);
+};
+const joinOnline = function (roomID) {
+	initOnline();
+	online.joinGame(roomID);
+};
+const startGame = function () {
+	// If host setup immediately
+	if (matchData.isHost)
+		setUp();
+	else
+		online.getCards();
+};
 const loadCharacters = function () {
-	fetch(charactersFile)
-		.then(response => response.json())
-		.then(data => {
-			characters = data["characters"];
-			setUp();
+	return fetch(charactersFile)
+		.then(response => response.json(), error => {
+			console.error(error);
 		});
 };
-loadCharacters();
+const errorFromServer = function (msg) {
+	alert(msg);
+};
+const start = function () {
+	loadCharacters().then(data => {
+		characters = data["characters"];
+		let isOnline = window.confirm("Do you want to play online?");
+		if (isOnline) {
+			online = new Online();
+			let roomID = window.prompt("Enter room ID.");
+			if (roomID)
+				online.createConnection().then(joinOnline(roomID));
+			else {
+				getCards(stockArray);
+				online.createConnection().then(hostOnline);
+			}
+		}
+		else {
+			getCards(stockArray);
+			setUp();
+		}
+	}).catch(() => {
+		console.error("Invalid character data received.");
+	});
+};
 
 if ("serviceWorker" in navigator) {
 	window.addEventListener("load", () => {
@@ -285,3 +369,5 @@ if ("serviceWorker" in navigator) {
 		});
 	});
 }
+
+start();
