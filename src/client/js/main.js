@@ -6,13 +6,9 @@ import "../assets/bgmusic2.mp3";
 import charactersFile from "../data.json";
 import { Online } from "./online";
 
-let online = null;
-
 window.onload = function () {
 	document.getElementById("my_audio").play();
 };
-
-let characters = [];
 
 import {
 	attributesSupported,
@@ -27,6 +23,10 @@ import {
 //audio files
 let attWins = document.querySelector("#attWins");
 let diffWins = document.querySelector("#diffWins");
+
+let characters = [];
+let cards = {};
+let online = null;
 
 const playerContainers = document.getElementsByClassName("palyer-container");
 
@@ -52,16 +52,16 @@ const players = function* (start = 1, end = maxPlayers, step = 1, skipLost = tru
 	}
 	return iterationCount;
 };
-//this will store number from 0 to 49 which will be shuffled and later divided into two decks of cards
-let stockArray = [];
 
-for (let i = 0; i < maxCards; i++) {
-	stockArray.push(i);
-}
+// TODO: better card shuffler
+const shuffle = async function () {
+	//this will store number from 0 to 49 which will be shuffled and later divided into two decks of cards
+	let stockArray = [];
 
-//helper function for shuffling the array
-function shuffle(array) {
-	var currentIndex = array.length, temporaryValue, randomIndex;
+	for (let i = 0; i < maxCards; i++) {
+		stockArray.push(i);
+	}
+	var currentIndex = stockArray.length, temporaryValue, randomIndex;
 
 	// While there remain elements to shuffle...
 	while (0 !== currentIndex) {
@@ -71,25 +71,24 @@ function shuffle(array) {
 		currentIndex -= 1;
 
 		// And swap it with the current element.
-		temporaryValue = array[currentIndex];
-		array[currentIndex] = array[randomIndex];
-		array[randomIndex] = temporaryValue;
+		temporaryValue = stockArray[currentIndex];
+		stockArray[currentIndex] = stockArray[randomIndex];
+		stockArray[randomIndex] = temporaryValue;
 	}
 
-	return array;
-}
+	return stockArray;
+};
 
-stockArray = shuffle(stockArray);
-
-let cards = {};
-const getCards = function (stock) {
+const splitCards = async function (stock) {
 	let divider = stock.length / maxPlayers;
+	let cards = {};
 	for (let player of players()) {
 		// TODO: make better cards divider
 		// example for player 1: (player-1*divider) will be 0
 		// player*divider will be 25
 		cards[player] = stock.slice((player - 1) * divider, player * divider);
 	}
+	return cards;
 };
 
 function setContent() {
@@ -315,7 +314,8 @@ const playerJoined = function () {
 		online.sendCards(cards);
 };
 const playerChose = function (data) {
-	judge(data.attribute);
+	if(matchData.status == matchStatus.running)
+		judge(data.attribute);
 };
 const joinOnline = function (roomID) {
 	initOnline();
@@ -340,24 +340,26 @@ const errorFromServer = function (msg) {
 const start = function () {
 	loadCharacters().then(data => {
 		characters = data["characters"];
-		let isOnline = window.confirm("Do you want to play online?");
-		if (isOnline) {
-			online = new Online();
-			let roomID = window.prompt("Enter room ID.");
-			if (roomID)
-				online.createConnection().then(joinOnline(roomID));
-			else {
-				getCards(stockArray);
-				online.createConnection().then(hostOnline);
+		return shuffle();
+	})
+		.then((shuffledArray) => splitCards(shuffledArray))
+		.then((splittedCards) => {
+			cards = splittedCards;
+			let isOnline = window.confirm("Do you want to play online?");
+			if (isOnline) {
+				online = new Online();
+				let roomID = window.prompt("Enter room ID.");
+				if (roomID)
+					online.createConnection().then(joinOnline(roomID));
+				else
+					online.createConnection().then(hostOnline);
 			}
-		}
-		else {
-			getCards(stockArray);
-			setUp();
-		}
-	}).catch(() => {
-		console.error("Invalid character data received.");
-	});
+			else
+				setUp();
+		})
+		.catch(() => {
+			console.error("Invalid character data received.");
+		});
 };
 
 if ("serviceWorker" in navigator) {
