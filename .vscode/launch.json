@@ -13,31 +13,20 @@
 			"protocol": "inspector",
 		},
 		{
-			"name": "Launch Server",
-			"program": "${workspaceFolder}/src/server/server.js",
-			"request": "launch",
-			"skipFiles": [
-				"<node_internals>/**"
-			],
-			"type": "pwa-node",
-			"cwd": "${workspaceFolder}"
-		},
-		{
 			"type": "chrome",
 			"request": "launch",
-			"name": "Launch Chrome",
+			"name": "Only Launch Chrome",
 			"url": "http://localhost:3000",
-			"sourceMaps": true,
-			"preLaunchTask": "npm: serve-client",
+			"sourceMaps": true
 		}
 	],
 	"compounds": [
 		{
 			"name": "Launch Server and Client",
-			"preLaunchTask": "npm: serve-server",
+			"preLaunchTask": "npm: start-dev",
 			"configurations": [
 				"Node: Nodemon",
-				"Launch Chrome"
+				"Only Launch Chrome"
 			]
 		}
 	]

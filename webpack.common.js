@@ -5,11 +5,8 @@ const WorkboxPlugin = require("workbox-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
+
 module.exports = {
-	/* eslint-enable no-undef */
-	entry: {
-		main: "./src/client/js/main.js"
-	},
 	output: {
 		publicPath: ASSET_PATH,
 	},

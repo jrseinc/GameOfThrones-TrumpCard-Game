@@ -3,41 +3,9 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "serve-client",
-			"promptOnClose": true,
-			"isBackground": true,
-			"problemMatcher": [
-				{
-					"owner": "webpack",
-					"severity": "error",
-					"fileLocation": "absolute",
-					"pattern": [
-						{
-							"regexp": "ERROR in (.*)",
-							"file": 1
-						},
-						{
-							"regexp": ".",
-							"line": 1,
-							"column": 2,
-							"message": 3
-						}
-					],
-					"background": {
-						"activeOnStart": true,
-						"beginsPattern": "building",
-						"endsPattern": "(Compiled|Failed)"
-					}
-				}
-			],
-			"label": "npm: serve-client",
-			"detail": "webpack serve --progress --hot --config webpack.dev.js"
-		},
-		{
-			"type": "npm",
-			"script": "serve-server",
-			"label": "npm: serve-server",
-			"detail": "nodemon --inspect src/server/server.js",
+			"script": "start-dev",
+			"label": "npm: start-dev",
+			"detail": "nodemon --inspect ./src/server/development.mjs",
 			"promptOnClose": true,
 			"isBackground": true,
 			"problemMatcher": [
@@ -47,7 +15,7 @@
 					"fileLocation": "absolute",
 					"pattern": [
 						{
-							"regexp": "app crashed",
+							"regexp": "(app crashed|ERROR in (.*))",
 							"file": 1
 						},
 						{
@@ -60,7 +28,7 @@
 					"background": {
 						"activeOnStart": true,
 						"beginsPattern": "starting",
-						"endsPattern": "App listening"
+						"endsPattern": "(Compiled|Failed)"
 					}
 				}
 			],

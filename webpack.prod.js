@@ -11,6 +11,9 @@ const JsonMinimizerPlugin = require("json-minimizer-webpack-plugin");
 
 module.exports = merge(common, {
 	mode: "production",
+	entry: {
+		main: "./src/client/js/main.js"
+	},
 	output: {
 		filename: "[name].[contenthash].bundle.js",
 		path: path.resolve(__dirname, "./dist")

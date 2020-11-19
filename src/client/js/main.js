@@ -317,7 +317,7 @@ const playerJoined = function () {
 		online.sendCards(cards);
 };
 const playerChose = function (data) {
-	if(matchData.status == matchStatus.running)
+	if (matchData.status == matchStatus.running)
 		judge(data.attribute);
 };
 const joinOnline = function (roomID) {
@@ -368,46 +368,46 @@ const start = function () {
 //pause menu actions
 const menu = document.getElementById("pause-menu");
 //toggle view state of menu
-const toggleMenuView = function(){
-	menu.classList.toggle('toggle-menu-show');
-}
+const toggleMenuView = function () {
+	menu.classList.toggle("toggle-menu-show");
+};
 
 //Code to toogle music on/off
 const toggleMusicBtn = document.getElementById("musicToggle");
-const toggleMusicFuntion = function(){
-	toggleMusicBtn.classList.toggle('active');
+const toggleMusicFuntion = function () {
+	toggleMusicBtn.classList.toggle("active");
 	bgMusic.muted = !bgMusic.muted;
-}
-toggleMusicBtn.addEventListener('click', () =>{ toggleMusicFuntion(); });
+};
+toggleMusicBtn.addEventListener("click", () => { toggleMusicFuntion(); });
 
 //Code to toggle voice on/off
 const toggleVoiceBtn = document.getElementById("voiceToggle");
-const toggleVoiceFuntion = function(){
-	toggleVoiceBtn.classList.toggle('active');
+const toggleVoiceFuntion = function () {
+	toggleVoiceBtn.classList.toggle("active");
 	attWins.muted = !attWins.muted;
 	diffWins.muted = !diffWins.muted;
-}
-toggleVoiceBtn.addEventListener('click', () =>{ toggleVoiceFuntion(); });
+};
+toggleVoiceBtn.addEventListener("click", () => { toggleVoiceFuntion(); });
 
 //keydowm's
-window.addEventListener('keydown', (evt) =>{
-	if(evt.key === 'm'){
+window.addEventListener("keydown", (evt) => {
+	if (evt.key === "m") {
 		toggleMusicFuntion();
-		if(bgMusic.muted == false)
-		alert("Background Music ON");
+		if (bgMusic.muted == false)
+			alert("Background Music ON");
 		else
-		alert("Background Music OFF");
+			alert("Background Music OFF");
 	}
-	else if(evt.key === 'v'){
+	else if (evt.key === "v") {
 		toggleVoiceFuntion();
-		if(attWins.muted == false)
-		alert("Voices ON");
+		if (attWins.muted == false)
+			alert("Voices ON");
 		else
-		alert("Voices OFF");
+			alert("Voices OFF");
 	}
-	else if(evt.key === " "){
+	else if (evt.key === " ") {
 		toggleMenuView();
-	} 
+	}
 });
 
 
@@ -422,3 +422,7 @@ if ("serviceWorker" in navigator) {
 }
 
 start();
+
+if (module.hot) {
+	module.hot.accept();
+}

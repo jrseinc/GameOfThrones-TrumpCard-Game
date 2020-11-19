@@ -5,99 +5,108 @@ import { Server as SocketServer } from "socket.io";
 import { fileURLToPath } from "url";
 import { commands, maxPlayers } from "../common/structures.mjs";
 
-const app = express();
-const server = http.createServer(app);
-const io = new SocketServer(server);
+export const createServer = function (attachFiles = true) {
+	const app = express();
 
-// Reference: https://stackoverflow.com/a/50052194
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+	const server = http.createServer(app);
+	const io = new SocketServer(server);
 
-const DIST_DIR = path.join(__dirname, "/../../dist");
-const HTML_FILE = path.join(DIST_DIR, "index.html");
-const PORT = process.env.PORT || 3000;
+	// Reference: https://stackoverflow.com/a/50052194
+	const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static(DIST_DIR));
+	const DIST_DIR = path.join(__dirname, "/../../dist");
+	const HTML_FILE = path.join(DIST_DIR, "index.html");
+	if (attachFiles) {
+		app.use(express.static(DIST_DIR));
 
-app.get("*", (req, res) => {
-	res.sendFile(HTML_FILE);
-});
-
-const getRandomId = (min = 1000, max = 9999) => {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min + 1) + min);
-};
-
-const createNewGame = function () {
-	let roomID = getRandomId().toString();
-	// Get new random id until it's different from current room ids
-	while (io.sockets.adapter.rooms.has(roomID))
-		roomID = getRandomId().toString();
-	this.emit(commands.newGameCreated, { "roomID": roomID });
-	this.join(roomID);
-};
-
-const joinGame = function (roomID, callback) {
-	// Check if the room exist
-	if (io.sockets.adapter.rooms.has(roomID)) {
-		if (io.sockets.adapter.rooms.get(roomID).size >= maxPlayers) {
-			this.emit(commands.error, "Max players already joined.");
-			return;
-		}
-		this.join(roomID);
-		this.to(roomID).emit(commands.playerJoined);
-		// Current size of the room will be the player number.
-		// Return it back to the player joined
-		let player = io.sockets.adapter.rooms.get(roomID).size;
-		callback(player);
-
-		// If the room has maximum number of players allowed
-		// broadcast lobby full to all players
-		if (player == maxPlayers)
-			io.in(roomID).emit(commands.lobbyFull);
+		app.get("*", (req, res) => {
+			res.sendFile(HTML_FILE);
+		});
 	}
-	else
-		this.emit(commands.error, "Invalid room number.");
+	return { app, server, io };
 };
 
-const playerChose = function (data) {
-	this.to(data.roomID).emit(commands.playerChose, { player: data.player, attribute: data.attribute });
-};
+export const attachToServerIO = function (io) {
+	const getRandomId = (min = 1000, max = 9999) => {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min + 1) + min);
+	};
 
-const cards = function (data) {
-	this.to(data.roomID).emit(commands.cards, data.cards);
-};
+	const createNewGame = function () {
+		let roomID = getRandomId().toString();
+		// Get new random id until it's different from current room ids
+		while (io.sockets.adapter.rooms.has(roomID))
+			roomID = getRandomId().toString();
+		this.emit(commands.newGameCreated, { "roomID": roomID });
+		this.join(roomID);
+	};
 
-const getCards = function (roomID) {
-	this.to(roomID).emit(commands.getCards);
-};
+	const joinGame = function (roomID, callback) {
+		// Check if the room exist
+		if (io.sockets.adapter.rooms.has(roomID)) {
+			if (io.sockets.adapter.rooms.get(roomID).size >= maxPlayers) {
+				this.emit(commands.error, "Max players already joined.");
+				return;
+			}
+			this.join(roomID);
+			this.to(roomID).emit(commands.playerJoined);
+			// Current size of the room will be the player number.
+			// Return it back to the player joined
+			let player = io.sockets.adapter.rooms.get(roomID).size;
+			callback(player);
 
-const matchData = function (data) {
-	this.to(data.roomID).emit(commands.matchData, data.matchData);
-};
-const disconnect = function () {
-	console.log(this.id, "disconnected");
-};
-io.on("connection", (socket) => {
-	console.log("a user connected");
-	socket.on(commands.getCards, getCards);
-	socket.on(commands.cards, cards);
-	socket.on(commands.createNewGame, createNewGame);
-	socket.on(commands.matchData, matchData);
-	socket.on(commands.joinGame, joinGame);
-	socket.on(commands.playerChose, playerChose);
-	socket.on("disconnect", disconnect);
-});
+			// If the room has maximum number of players allowed
+			// broadcast lobby full to all players
+			if (player == maxPlayers)
+				io.in(roomID).emit(commands.lobbyFull);
+		}
+		else
+			this.emit(commands.error, "Invalid room number.");
+	};
 
-server.listen(PORT, () => {
-	// eslint-disable-next-line no-console
-	console.log(`App listening to ${PORT}....`);
-	// eslint-disable-next-line no-console
-	console.log("Press Ctrl+C to quit.");
-});
+	const playerChose = function (data) {
+		this.to(data.roomID).emit(commands.playerChose, { player: data.player, attribute: data.attribute });
+	};
 
-process.on("SIGTERM", () => {
-	server.close(() => {
-		console.log("Process terminated");
+	const cards = function (data) {
+		this.to(data.roomID).emit(commands.cards, data.cards);
+	};
+
+	const getCards = function (roomID) {
+		this.to(roomID).emit(commands.getCards);
+	};
+
+	const matchData = function (data) {
+		this.to(data.roomID).emit(commands.matchData, data.matchData);
+	};
+	const disconnect = function () {
+		console.log(this.id, "disconnected");
+	};
+	io.on("connection", (socket) => {
+		console.log("a user connected");
+		socket.on(commands.getCards, getCards);
+		socket.on(commands.cards, cards);
+		socket.on(commands.createNewGame, createNewGame);
+		socket.on(commands.matchData, matchData);
+		socket.on(commands.joinGame, joinGame);
+		socket.on(commands.playerChose, playerChose);
+		socket.on("disconnect", disconnect);
 	});
-});
+};
+
+export const startListening = function (server) {
+	const PORT = process.env.PORT || 3000;
+	server.listen(PORT, () => {
+		// eslint-disable-next-line no-console
+		console.log(`App listening to ${PORT}....`);
+		// eslint-disable-next-line no-console
+		console.log("Press Ctrl+C to quit.");
+	});
+
+	process.on("SIGTERM", () => {
+		server.close(() => {
+			console.log("Process terminated.");
+		});
+	});
+};

@@ -7,9 +7,8 @@
     "test": "jest",
     "build-prod": "webpack --mode production --config webpack.prod.js",
     "heroku-postbuild": "npm run build-prod",
-    "start": "node ./src/server/server.mjs",
-    "serve-server": "nodemon --inspect src/server/server.mjs",
-    "serve-client": "webpack serve --progress --hot --config webpack.dev.js"
+    "start": "node ./src/server/production.mjs",
+    "start-dev": "nodemon --inspect ./src/server/development.mjs"
   },
   "author": "Ashish Saini",
   "license": "MIT",

@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const merge = require("webpack-merge");
 const common = require("./webpack.common.js");
 const webpack = require("webpack");
@@ -7,17 +6,20 @@ const postcssPresetEnv = require("postcss-preset-env");
 
 module.exports = merge(common, {
 	mode: "development",
+	entry: {
+		main: ["./src/client/js/main.js", "webpack-hot-middleware/client"]
+	},
 	output: {
 		filename: "[name].js",
 		path: path.resolve(__dirname, "./dist")
 	},
-	optimization: {usedExports: true},
-	devtool: "source-map",
+	devtool: "inline-source-map",
 	devServer: {
-		writeToDisk: true
+		hot: true
 	},
 	plugins: [
-		new webpack.HotModuleReplacementPlugin()
+		new webpack.HotModuleReplacementPlugin(),
+		new webpack.NoEmitOnErrorsPlugin()
 	],
 	module: {
 		rules: [
