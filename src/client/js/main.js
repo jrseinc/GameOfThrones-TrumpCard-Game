@@ -6,9 +6,6 @@ import "../assets/bgmusic2.mp3";
 import charactersFile from "../data.json";
 import { Online } from "./online";
 
-window.onload = function () {
-	document.getElementById("my_audio").play();
-};
 
 import {
 	attributesSupported,
@@ -23,6 +20,12 @@ import {
 //audio files
 let attWins = document.querySelector("#attWins");
 let diffWins = document.querySelector("#diffWins");
+let bgMusic = document.getElementById("my_audio");
+
+window.onload = function () {
+	bgMusic.play();
+};
+
 
 let characters = [];
 let cards = {};
@@ -361,6 +364,52 @@ const start = function () {
 			console.error("Invalid character data received.");
 		});
 };
+
+//pause menu actions
+const menu = document.getElementById("pause-menu");
+//toggle view state of menu
+const toggleMenuView = function(){
+	menu.classList.toggle('toggle-menu-show');
+}
+
+//Code to toogle music on/off
+const toggleMusicBtn = document.getElementById("musicToggle");
+const toggleMusicFuntion = function(){
+	toggleMusicBtn.classList.toggle('active');
+	bgMusic.muted = !bgMusic.muted;
+}
+toggleMusicBtn.addEventListener('click', () =>{ toggleMusicFuntion(); });
+
+//Code to toggle voice on/off
+const toggleVoiceBtn = document.getElementById("voiceToggle");
+const toggleVoiceFuntion = function(){
+	toggleVoiceBtn.classList.toggle('active');
+	attWins.muted = !attWins.muted;
+	diffWins.muted = !diffWins.muted;
+}
+toggleVoiceBtn.addEventListener('click', () =>{ toggleVoiceFuntion(); });
+
+//keydowm's
+window.addEventListener('keydown', (evt) =>{
+	if(evt.key === 'm'){
+		toggleMusicFuntion();
+		if(bgMusic.muted == false)
+		alert("Background Music ON");
+		else
+		alert("Background Music OFF");
+	}
+	else if(evt.key === 'v'){
+		toggleVoiceFuntion();
+		if(attWins.muted == false)
+		alert("Voices ON");
+		else
+		alert("Voices OFF");
+	}
+	else if(evt.key === " "){
+		toggleMenuView();
+	} 
+});
+
 
 if ("serviceWorker" in navigator) {
 	window.addEventListener("load", () => {

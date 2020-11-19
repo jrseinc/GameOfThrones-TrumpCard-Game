@@ -11,6 +11,15 @@
         <!-- eddited for github pages as the 27mb background images couldn't be uploaded -->
         <video class="video-background" no-controls autoplay loop muted src="./assets/floor.mp4"></video>
         <div id="room-id"></div>
+
+
+        <div class="pause-menu" id="pause-menu">
+            <button type="button" class="menu-button active" id="musicToggle">Music (M)</button>
+            <button type="button" class="menu-button active" id="voiceToggle">Voice (V)</button>
+            <button type="button" class="menu-button" id="Restart">Restart (R)</button>
+            <button type="button" class="menu-button" id="Quit">Quit (Q)</button>
+        </div>
+
         <div class="palyer-container">
             <h1 class="role underline" id="player-1-role">ATTACKER</h1>
             <div class="card">
@@ -95,7 +104,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>  
     <audio class="audios" id="my_audio" src="./assets/bgmusic2.mp3" loop="loop"></audio>
     <audio class="audios" id="attWins" src="./assets/attWin.mp3"></audio>
     <audio class="audios" id="diffWins" src="./assets/defWin.mp3"></audio>
